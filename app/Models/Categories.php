@@ -58,6 +58,10 @@ class Categories extends Model
         );
     }
 
+    public function getChildren(){
+        return $this->getChilds();
+    }
+
     /*
     *
     */

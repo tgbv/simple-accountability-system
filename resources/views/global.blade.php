@@ -42,6 +42,14 @@
             border-top: 1px solid lightgray;
         }
 
+        /* main navbar */
+        .main-navbar {
+            border-bottom: 1px solid lightgray;
+        }
+        .main-navbar ul a {
+            color: black;
+        }
+
     </style>
 
     @yield('head')
@@ -64,8 +72,8 @@
         </ul>
 
         {{-- navbaaar --}}
-        <nav>
-            <div class="nav-wrapper">
+        <nav class="main-navbar z-depth-0">
+            <div class="nav-wrapper white ">
                 {{-- <a href="#" class="brand-logo">Logo</a> --}}
 
                 {{-- MED/SMALL SCREEN NAVBARS --}}
@@ -81,13 +89,13 @@
                     @yield('navbar-left')
 
                 </ul>
-                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <ul id="nav-mobile" class="right hide-on-med-and-down ">
                     @yield('navbar-right')
 
                     <li>
-                        <a href="#!" class="dropdown-trigger" data-target="lang-dropdown">
+                        <a href="#!" class="dropdown-trigger " data-target="lang-dropdown">
                             <span>Lang</span>
-                            <i class="material-icons right">arrow_drop_down</i>
+                            <i class="material-icons right ">arrow_drop_down</i>
                         </a>
                     </li>
                     <li><a href="collapsible.html">Logout</a></li>
@@ -133,19 +141,55 @@
 
     {{-- some scripts --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    {{-- if it's dev env we can afford to have full length scripts --}}
     @if(config('app.env') === 'dev')
         <script src="https://vuejs.org/js/vue.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.js" integrity="sha512-otOZr2EcknK9a5aa3BbMR9XOjYKtxxscwyRHN6zmdXuRfJ5uApkHB7cz1laWk2g8RKLzV9qv/fl3RPwfCuoxHQ==" crossorigin="anonymous"></script>
     @else
         <script src="https://vuejs.org/js/vue.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous"></script>
     @endif
 
     <script>
-        M.Sidenav.init( document.querySelectorAll('.sidenav') )
-        M.Dropdown.init( document.querySelectorAll('.dropdown-trigger') )
-
+        /*
+        *   util functions
+        */
         const link = function(url){
             window.location = url
         }
+        const _ = function(el_id){
+           return document.getElementById(el_id)
+        }
+        const toast = function(message){
+            return M.toast({html: message})
+        }
+
+        /*
+        *   configure axios interceptors for response
+        */
+        axios.interceptors.response.use(response=>{
+            return response
+        }, error=>{
+            toast(error.response.data.message)
+            return Promise.reject(error.message)
+        })
+
+        /*
+        *   material design init
+        */
+        M.Sidenav.init( document.querySelectorAll('.sidenav') )
+        // M.Modal.init( document.querySelectorAll('.modal') )
+        M.Dropdown.init( document.querySelectorAll('.dropdown-trigger') )
+        M.Tooltip.init( document.querySelectorAll('.tooltipped') )
     </script>
+
+    <script>
+        @yield('script')
+    </script>
+
+
+    {{-- Before End Of Body --}}
+    @yield('BEOB')
 </body>
 </html>
