@@ -62,7 +62,7 @@
         <!--- sidenav --->
         <ul id="slide-out" class="main-sidenav sidenav sidenav-fixed z-depth-0">
             <li><a href="{{ route('categories') }}">Categories</a></li>
-            <li><a href="#!">Entities</a></li>
+            <li><a href="{{ route('entities') }}">Entities</a></li>
         </ul>
 
         {{-- language dropdown --}}

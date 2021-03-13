@@ -20,4 +20,19 @@ Route::prefix('categories')->group(function()
     Route::name('categories.id')->get('/{id}', 'Categories@get');
 
 });
+
+/*
+*   ENTITIES
+*/
+Route::prefix('entities')->group(function()
+{
+    # api-related
+    Route::name('entities.api-paginateAll')->get('/api-paginateAll', 'Entities@apiPaginateAll');
+    Route::name('entities.entity_id.api-pushCat')->patch('/{entity_id}/api-pushCat', 'Entities@apiPushCat');
+
+    # ..not api-related
+    Route::name('entities')->get('/', 'Entities@index');
+    //Route::name('entities.id')->get('/{id}', 'Entities@get');
+
+});
 // Route::name('entities')->get('/entities', );

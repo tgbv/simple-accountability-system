@@ -41,6 +41,11 @@
                 parent_id: 1,
                 Modal: null,
                 categories: [],
+
+                // used when I need to couple the newly created category with an entity
+                // meaning when newly created category holds the entity
+                // just check postData @ axios.then( ... )
+                entity_to_couple_with: null,
             }
         },
 
@@ -67,11 +72,44 @@
 
                 // post data
                 axios.post('{{ route("categories.api-post") }}', Data)
-                .then(res=>{
+                .then(async res=>{
                     toast('Done!')
-                    setTimeout(()=>{
-                        window.location.reload()
-                    }, 1000)
+
+                    // if we need to couple this category with an entity..
+                    if(this.entity_to_couple_with)
+                    {
+                        await this.coupleEntityToCategory(res.data.id)
+
+                        // update entity categories list
+                        this.entity_to_couple_with.get_categories.push(res.data)
+
+                        this.Modal.close()
+                    }
+                    else
+                    // otherwise it's a legacy case and carry on with older procedure
+                        setTimeout(()=>{
+                            window.location.reload()
+                        }, 1000)
+
+                })
+            },
+
+            /*
+            *   shows modal with eventual paramters
+                @param1: object
+            */
+            showModal(entity_to_couple_with=null){
+                this.entity_to_couple_with = entity_to_couple_with
+                this.Modal.open()
+            },
+
+            /*
+            *   couple entity with newly created category
+                category id passed as param
+            */
+            async coupleEntityToCategory(cat_id){
+                return await axios.patch('{{ route("entities.entity_id.api-pushCat", "###") }}'.replace("###", this.entity_to_couple_with.id), {
+                    categories: [cat_id],
                 })
             }
         },
@@ -89,9 +127,13 @@
                     this.name = ''
                     this.is_subcat=false
                     this.parent_id = 1
+                    this.entity_to_couple_with = null
                 }
             })
         }
     })
+
+    // compatiblity with view.categories
+    window.AddCategory = AddCategory
 
 </script>
